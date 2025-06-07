@@ -14,7 +14,6 @@ OC.L10N.register(
     "Good evening, {name}" : "Добрый вечер, {name}",
     "Hello" : "Здравствуйте",
     "Hello, {name}" : "Здравствуйте, {name}!",
-    "\"{title} icon\"" : "\"{title} иконка\"",
     "Customize" : "Настроить",
     "Edit widgets" : "Редактировать виджеты",
     "Get more widgets from the App Store" : "Загрузить виджеты из магазина приложений",

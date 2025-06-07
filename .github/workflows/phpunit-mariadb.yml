@@ -57,6 +57,7 @@ jobs:
     if: needs.changes.outputs.src != 'false'
 
     strategy:
+      fail-fast: false
       matrix:
         php-versions: ['8.1']
         mariadb-versions: ['10.3', '10.6', '10.11', '11.4']
@@ -135,7 +136,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@f2dba722c67b86c6caa034178c6e4d35335f6706 # v1.1.0
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
         with:
           flags: phpunit-mariadb
 

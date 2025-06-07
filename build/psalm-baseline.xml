@@ -2873,12 +2873,6 @@
       <code><![CDATA[dispatch]]></code>
     </DeprecatedMethod>
   </file>
-  <file src="core/Application.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getServer]]></code>
-      <code><![CDATA[registerService]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="core/BackgroundJobs/BackgroundCleanupUpdaterBackupsJob.php">
     <DeprecatedClass>
       <code><![CDATA[Files::rmdirr($dir)]]></code>
@@ -3885,14 +3879,6 @@
       <code><![CDATA[wrap]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="lib/private/Files/Mount/ObjectHomeMountProvider.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[\OCP\Files\Mount\IMountPoint]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/private/Files/Node/File.php">
     <InvalidReturnStatement>
       <code><![CDATA[$this->view->hash($type, $this->path, $raw)]]></code>
@@ -4350,9 +4336,6 @@
     </ParamNameMismatch>
   </file>
   <file src="lib/private/Route/Router.php">
-    <InvalidClass>
-      <code><![CDATA[\OC_APP]]></code>
-    </InvalidClass>
     <InvalidNullableReturnType>
       <code><![CDATA[string]]></code>
     </InvalidNullableReturnType>

@@ -1,9 +1,11 @@
 <?php
+
+declare(strict_types=1);
 /**
  * SPDX-FileCopyrightText: 2016 Nextcloud GmbH and Nextcloud contributors
  * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-namespace OCA\DAV\Tests\Files\Sharing;
+namespace OCA\DAV\Tests\unit\Files\Sharing;
 
 use OCA\DAV\Files\Sharing\FilesDropPlugin;
 use OCP\Files\Folder;
@@ -11,7 +13,7 @@ use OCP\Files\NotFoundException;
 use OCP\Share\IAttributes;
 use OCP\Share\IShare;
 use PHPUnit\Framework\MockObject\MockObject;
-use Sabre\DAV\Exception\MethodNotAllowed;
+use Sabre\DAV\Exception\BadRequest;
 use Sabre\DAV\Server;
 use Sabre\HTTP\RequestInterface;
 use Sabre\HTTP\ResponseInterface;
@@ -117,7 +119,7 @@ class FilesDropPluginTest extends TestCase {
 		$this->request->method('getMethod')
 			->willReturn('MKCOL');
 
-		$this->expectException(MethodNotAllowed::class);
+		$this->expectException(BadRequest::class);
 
 		$this->plugin->beforeMethod($this->request, $this->response);
 	}
@@ -205,7 +207,7 @@ class FilesDropPluginTest extends TestCase {
 		$this->request->method('getHeader')
 			->with('X-NC-Nickname')
 			->willReturn('nickname');
-		
+
 		$this->request->method('getPath')
 			->willReturn('/files/token/folder/subfolder/file.txt');
 		$this->request->method('getBaseUrl')

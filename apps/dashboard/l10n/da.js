@@ -16,7 +16,6 @@ OC.L10N.register(
     "Hello, {name}" : "Hej {name}",
     "Happy birthday 🥳🤩🎂🎉" : "Tillykke med fødselsdagen 🥳🤩🎂🎉",
     "Happy birthday, {name} 🥳🤩🎂🎉" : "Tillykke med fødselsdagen, {name} 🥳🤩🎂🎉",
-    "\"{title} icon\"" : "\"{title} ikon\"",
     "Customize" : "Brugerdefiner",
     "Edit widgets" : "Rediger widgets",
     "Get more widgets from the App Store" : "Få flere widgets fra App Store",
