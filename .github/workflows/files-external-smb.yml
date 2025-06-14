@@ -43,6 +43,7 @@ jobs:
     if: ${{ github.repository_owner != 'nextcloud-gmbh' && needs.changes.outputs.src != 'false' }}
 
     strategy:
+      fail-fast: false
       matrix:
         php-versions: ['8.1']
         include:
@@ -92,7 +93,7 @@ jobs:
           apps/files_external/tests/env/wait-for-connection 127.0.0.1 445 60
 
       - name: PHPUnit
-        run: composer run test:files_external -- --verbose \
+        run: composer run test:files_external -- \
           apps/files_external/tests/Storage/SmbTest.php \
           --log-junit junit.xml \
           ${{ matrix.coverage && '--coverage-clover ./clover.xml' || '' }}
@@ -106,7 +107,7 @@ jobs:
 
       - name: Upload test results
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@f2dba722c67b86c6caa034178c6e4d35335f6706 # v1.1.0
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1.1.1
         with:
           flags: phpunit-files-external-smb
 
