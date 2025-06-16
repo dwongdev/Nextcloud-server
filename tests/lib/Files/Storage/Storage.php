@@ -8,6 +8,7 @@
 namespace Test\Files\Storage;
 
 use OC\Files\Cache\Watcher;
+use OC\Files\Storage\Wrapper\Wrapper;
 use OCP\Files\Storage\IStorage;
 use OCP\Files\Storage\IWriteStreamStorage;
 
@@ -327,7 +328,7 @@ abstract class Storage extends \Test\TestCase {
 	 * no change.
 	 */
 	public function testCheckUpdate(): void {
-		if ($this->instance instanceof \OC\Files\Storage\Wrapper\Wrapper) {
+		if ($this->instance instanceof Wrapper) {
 			$this->markTestSkipped('Cannot test update check on wrappers');
 		}
 		$textFile = \OC::$SERVERROOT . '/tests/data/lorem.txt';
@@ -557,7 +558,7 @@ abstract class Storage extends \Test\TestCase {
 
 		$this->instance->copy('source', 'target');
 
-		$this->assertFalse($this->instance->file_exists('target/test2.txt'));
+		$this->assertFalse($this->instance->file_exists('target/test2.txt'), 'File target/test2.txt should no longer exist, but does');
 		$this->assertEquals('foo', $this->instance->file_get_contents('target/test1.txt'));
 	}
 

@@ -50,7 +50,7 @@ class AppManagerTest extends TestCase {
 			});
 		$config->expects($this->any())
 			->method('setValue')
-			->willReturnCallback(function ($app, $key, $value) use (&$appConfig) {
+			->willReturnCallback(function ($app, $key, $value) use (&$appConfig): void {
 				if (!isset($appConfig[$app])) {
 					$appConfig[$app] = [];
 				}
@@ -70,6 +70,17 @@ class AppManagerTest extends TestCase {
 					}
 					return $values;
 				}
+			});
+		$config->expects($this->any())
+			->method('searchValues')
+			->willReturnCallback(function ($key, $lazy, $type) use (&$appConfig) {
+				$values = [];
+				foreach ($appConfig as $appid => $appData) {
+					if (isset($appData[$key])) {
+						$values[$appid] = $appData[$key];
+					}
+				}
+				return $values;
 			});
 
 		return $config;
@@ -159,15 +170,15 @@ class AppManagerTest extends TestCase {
 		}
 	}
 
-	public function dataGetAppIcon(): array {
-		$nothing = function ($appId) {
-			$this->assertEquals('test', $appId);
+	public static function dataGetAppIcon(): array {
+		$nothing = function ($appId): void {
+			self::assertEquals('test', $appId);
 			throw new \RuntimeException();
 		};
 
 		$createCallback = function ($workingIcons) {
 			return function ($appId, $icon) use ($workingIcons) {
-				$this->assertEquals('test', $appId);
+				self::assertEquals('test', $appId);
 				if (in_array($icon, $workingIcons)) {
 					return '/path/' . $icon;
 				}

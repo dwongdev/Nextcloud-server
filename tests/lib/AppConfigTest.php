@@ -14,6 +14,7 @@ use OCP\Exceptions\AppConfigUnknownKeyException;
 use OCP\IAppConfig;
 use OCP\IDBConnection;
 use OCP\Security\ICrypto;
+use OCP\Server;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -38,7 +39,7 @@ class AppConfigTest extends TestCase {
 	private static array $baseStruct =
 		[
 			'testapp' => [
-				'enabled' => ['enabled', 'true'],
+				'enabled' => ['enabled', 'yes'],
 				'installed_version' => ['installed_version', '1.2.3'],
 				'depends_on' => ['depends_on', 'someapp'],
 				'deletethis' => ['deletethis', 'deletethis'],
@@ -49,11 +50,12 @@ class AppConfigTest extends TestCase {
 				'otherkey' => ['otherkey', 'othervalue']
 			],
 			'123456' => [
-				'enabled' => ['enabled', 'true'],
+				'enabled' => ['enabled', 'yes'],
 				'key' => ['key', 'value']
 			],
 			'anotherapp' => [
-				'enabled' => ['enabled', 'false'],
+				'enabled' => ['enabled', 'no'],
+				'installed_version' => ['installed_version', '3.2.1'],
 				'key' => ['key', 'value']
 			],
 			'non-sensitive-app' => [
@@ -86,9 +88,9 @@ class AppConfigTest extends TestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		$this->connection = \OCP\Server::get(IDBConnection::class);
-		$this->logger = \OCP\Server::get(LoggerInterface::class);
-		$this->crypto = \OCP\Server::get(ICrypto::class);
+		$this->connection = Server::get(IDBConnection::class);
+		$this->logger = Server::get(LoggerInterface::class);
+		$this->crypto = Server::get(ICrypto::class);
 
 		// storing current config and emptying the data table
 		$sql = $this->connection->getQueryBuilder();
@@ -175,7 +177,7 @@ class AppConfigTest extends TestCase {
 	 */
 	private function generateAppConfig(bool $preLoading = true): IAppConfig {
 		/** @var AppConfig $config */
-		$config = new \OC\AppConfig(
+		$config = new AppConfig(
 			$this->connection,
 			$this->logger,
 			$this->crypto,
@@ -209,6 +211,19 @@ class AppConfigTest extends TestCase {
 		$config = $this->generateAppConfig(false);
 
 		$this->assertEqualsCanonicalizing(array_keys(self::$baseStruct), $config->getApps());
+	}
+
+	public function testGetAppInstalledVersions(): void {
+		$config = $this->generateAppConfig(false);
+
+		$this->assertEquals(
+			['testapp' => '1.2.3', 'anotherapp' => '3.2.1'],
+			$config->getAppInstalledVersions(false)
+		);
+		$this->assertEquals(
+			['testapp' => '1.2.3'],
+			$config->getAppInstalledVersions(true)
+		);
 	}
 
 	/**
@@ -410,7 +425,7 @@ class AppConfigTest extends TestCase {
 
 	public function testSearchValues(): void {
 		$config = $this->generateAppConfig();
-		$this->assertEqualsCanonicalizing(['testapp' => 'true', '123456' => 'true', 'anotherapp' => 'false'], $config->searchValues('enabled'));
+		$this->assertEqualsCanonicalizing(['testapp' => 'yes', '123456' => 'yes', 'anotherapp' => 'no'], $config->searchValues('enabled'));
 	}
 
 	public function testGetValueString(): void {
@@ -1322,7 +1337,7 @@ class AppConfigTest extends TestCase {
 		$config = $this->generateAppConfig();
 		$config->deleteKey('anotherapp', 'key');
 		$status = $config->statusCache();
-		$this->assertEqualsCanonicalizing(['enabled' => 'false'], $status['fastCache']['anotherapp']);
+		$this->assertEqualsCanonicalizing(['enabled' => 'no', 'installed_version' => '3.2.1'], $status['fastCache']['anotherapp']);
 	}
 
 	public function testDeleteKeyDatabase(): void {

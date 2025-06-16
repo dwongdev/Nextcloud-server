@@ -1,4 +1,5 @@
 <?php
+
 /**
  * SPDX-FileCopyrightText: 2016 Nextcloud GmbH and Nextcloud contributors
  * SPDX-FileCopyrightText: 2016 ownCloud, Inc.
@@ -55,6 +56,7 @@ use OC\Files\Mount\RootMountProvider;
 use OC\Files\Node\HookConnector;
 use OC\Files\Node\LazyRoot;
 use OC\Files\Node\Root;
+use OC\Files\ObjectStore\PrimaryObjectStoreConfig;
 use OC\Files\SetupManager;
 use OC\Files\Storage\StorageFactory;
 use OC\Files\Template\TemplateManager;
@@ -195,8 +197,8 @@ use OCP\Lock\ILockingProvider;
 use OCP\Lockdown\ILockdownManager;
 use OCP\Log\ILogFactory;
 use OCP\Mail\IMailer;
+use OCP\OCM\ICapabilityAwareOCMProvider;
 use OCP\OCM\IOCMDiscoveryService;
-use OCP\OCM\IOCMProvider;
 use OCP\Preview\IMimeIconProvider;
 use OCP\Profile\IProfileManager;
 use OCP\Profiler\IProfiler;
@@ -604,7 +606,7 @@ class Server extends ServerContainer implements IServerContainer {
 				$prefixClosure = function () use ($logQuery, $serverVersion): ?string {
 					if (!$logQuery) {
 						try {
-							$v = \OCP\Server::get(IAppConfig::class)->getAppInstalledVersions();
+							$v = \OCP\Server::get(IAppConfig::class)->getAppInstalledVersions(true);
 						} catch (\Doctrine\DBAL\Exception $e) {
 							// Database service probably unavailable
 							// Probably related to https://github.com/nextcloud/server/issues/37424
@@ -619,7 +621,7 @@ class Server extends ServerContainer implements IServerContainer {
 						];
 					}
 					$v['core'] = implode(',', $serverVersion->getVersion());
-					$version = implode(',', $v);
+					$version = implode(',', array_keys($v)) . implode(',', $v);
 					$instanceId = \OC_Util::getInstanceId();
 					$path = \OC::$SERVERROOT;
 					return md5($instanceId . '-' . $version . '-' . $path);
@@ -819,10 +821,11 @@ class Server extends ServerContainer implements IServerContainer {
 
 			$config = $c->get(\OCP\IConfig::class);
 			$logger = $c->get(LoggerInterface::class);
+			$objectStoreConfig = $c->get(PrimaryObjectStoreConfig::class);
 			$manager->registerProvider(new CacheMountProvider($config));
 			$manager->registerHomeProvider(new LocalHomeMountProvider());
-			$manager->registerHomeProvider(new ObjectHomeMountProvider($config));
-			$manager->registerRootProvider(new RootMountProvider($config, $c->get(LoggerInterface::class)));
+			$manager->registerHomeProvider(new ObjectHomeMountProvider($objectStoreConfig));
+			$manager->registerRootProvider(new RootMountProvider($objectStoreConfig, $config));
 			$manager->registerRootProvider(new ObjectStorePreviewCacheMountProvider($logger, $config));
 
 			return $manager;
@@ -1269,7 +1272,7 @@ class Server extends ServerContainer implements IServerContainer {
 
 		$this->registerAlias(IPhoneNumberUtil::class, PhoneNumberUtil::class);
 
-		$this->registerAlias(IOCMProvider::class, OCMProvider::class);
+		$this->registerAlias(ICapabilityAwareOCMProvider::class, OCMProvider::class);
 
 		$this->registerAlias(ISetupCheckManager::class, SetupCheckManager::class);
 
