@@ -18,6 +18,7 @@ use OCP\Collaboration\AutoComplete\IManager as IAutoCompleteManager;
 use OCP\Collaboration\Collaborators\ISearch as ICollaboratorSearch;
 use OCP\Diagnostics\IEventLogger;
 use OCP\EventDispatcher\IEventDispatcher;
+use OCP\IAppConfig;
 use OCP\ICacheFactory;
 use OCP\IConfig;
 use OCP\IGroup;
@@ -134,7 +135,8 @@ class AppManager implements IAppManager {
 	 */
 	private function getEnabledAppsValues(): array {
 		if (!$this->enabledAppsCache) {
-			$values = $this->getAppConfig()->getValues(false, 'enabled');
+			/** @var array<string,string> */
+			$values = $this->getAppConfig()->searchValues('enabled', false, IAppConfig::VALUE_STRING);
 
 			$alwaysEnabledApps = $this->getAlwaysEnabledApps();
 			foreach ($alwaysEnabledApps as $appId) {
@@ -202,7 +204,7 @@ class AppManager implements IAppManager {
 	 * List all apps enabled for a user
 	 *
 	 * @param \OCP\IUser $user
-	 * @return string[]
+	 * @return list<string>
 	 */
 	public function getEnabledAppsForUser(IUser $user) {
 		$apps = $this->getEnabledAppsValues();
@@ -545,10 +547,15 @@ class AppManager implements IAppManager {
 	 * @param string $appId
 	 * @param bool $forceEnable
 	 * @throws AppPathNotFoundException
+	 * @throws \InvalidArgumentException if the application is not installed yet
 	 */
 	public function enableApp(string $appId, bool $forceEnable = false): void {
 		// Check if app exists
 		$this->getAppPath($appId);
+
+		if ($this->config->getAppValue($appId, 'installed_version', '') === '') {
+			throw new \InvalidArgumentException("$appId is not installed, cannot be enabled.");
+		}
 
 		if ($forceEnable) {
 			$this->overwriteNextcloudRequirement($appId);
@@ -594,6 +601,10 @@ class AppManager implements IAppManager {
 		$info = $this->getAppInfo($appId);
 		if (!empty($info['types']) && $this->hasProtectedAppType($info['types'])) {
 			throw new \InvalidArgumentException("$appId can't be enabled for groups.");
+		}
+
+		if ($this->config->getAppValue($appId, 'installed_version', '') === '') {
+			throw new \InvalidArgumentException("$appId is not installed, cannot be enabled.");
 		}
 
 		if ($forceEnable) {
@@ -775,8 +786,8 @@ class AppManager implements IAppManager {
 	 *
 	 * @return array<string, string>
 	 */
-	public function getAppInstalledVersions(): array {
-		return $this->getAppConfig()->getAppInstalledVersions();
+	public function getAppInstalledVersions(bool $onlyEnabled = false): array {
+		return $this->getAppConfig()->getAppInstalledVersions($onlyEnabled);
 	}
 
 	/**
@@ -812,6 +823,10 @@ class AppManager implements IAppManager {
 	}
 
 	private function isAlwaysEnabled(string $appId): bool {
+		if ($appId === 'core') {
+			return true;
+		}
+
 		$alwaysEnabled = $this->getAlwaysEnabledApps();
 		return in_array($appId, $alwaysEnabled, true);
 	}

@@ -782,12 +782,6 @@
       <code><![CDATA[setAppValue]]></code>
     </DeprecatedMethod>
   </file>
-  <file src="apps/dav/lib/Controller/ExampleContentController.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[setAppValue]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="apps/dav/lib/Controller/InvitationResponseController.php">
     <UndefinedPropertyAssignment>
       <code><![CDATA[$vEvent->DTSTAMP]]></code>
@@ -1017,11 +1011,6 @@
     </DeprecatedMethod>
   </file>
   <file src="apps/dav/lib/Settings/CalDAVSettings.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getAppValue]]></code>
-    </DeprecatedMethod>
-  </file>
-  <file src="apps/dav/lib/Settings/ExampleContentSettings.php">
     <DeprecatedMethod>
       <code><![CDATA[getAppValue]]></code>
     </DeprecatedMethod>
@@ -2597,14 +2586,6 @@
       <code><![CDATA[$gid]]></code>
     </ParamNameMismatch>
   </file>
-  <file src="apps/user_ldap/lib/Helper.php">
-    <DeprecatedMethod>
-      <code><![CDATA[execute]]></code>
-      <code><![CDATA[getAppKeys]]></code>
-      <code><![CDATA[getAppValue]]></code>
-      <code><![CDATA[getAppValue]]></code>
-    </DeprecatedMethod>
-  </file>
   <file src="apps/user_ldap/lib/Jobs/CleanUp.php">
     <DeprecatedMethod>
       <code><![CDATA[getAppValue]]></code>
@@ -2871,12 +2852,6 @@
   <file src="apps/workflowengine/lib/Settings/ASettings.php">
     <DeprecatedMethod>
       <code><![CDATA[dispatch]]></code>
-    </DeprecatedMethod>
-  </file>
-  <file src="core/Application.php">
-    <DeprecatedMethod>
-      <code><![CDATA[getServer]]></code>
-      <code><![CDATA[registerService]]></code>
     </DeprecatedMethod>
   </file>
   <file src="core/BackgroundJobs/BackgroundCleanupUpdaterBackupsJob.php">
@@ -3456,53 +3431,9 @@
     </MoreSpecificImplementedParamType>
   </file>
   <file src="lib/private/AppFramework/Utility/SimpleContainer.php">
-    <LessSpecificReturnStatement>
-      <code><![CDATA[$class->newInstance()]]></code>
-      <code><![CDATA[$class->newInstanceArgs(array_map(function (ReflectionParameter $parameter) {
-			$parameterType = $parameter->getType();
-
-			$resolveName = $parameter->getName();
-
-			// try to find out if it is a class or a simple parameter
-			if ($parameterType !== null && ($parameterType instanceof ReflectionNamedType) && !$parameterType->isBuiltin()) {
-				$resolveName = $parameterType->getName();
-			}
-
-			try {
-				$builtIn = $parameter->hasType() && ($parameter->getType() instanceof ReflectionNamedType)
-					&& $parameter->getType()->isBuiltin();
-				return $this->query($resolveName, !$builtIn);
-			} catch (QueryException $e) {
-				// Service not found, use the default value when available
-				if ($parameter->isDefaultValueAvailable()) {
-					return $parameter->getDefaultValue();
-				}
-
-				if ($parameterType !== null && ($parameterType instanceof ReflectionNamedType) && !$parameterType->isBuiltin()) {
-					$resolveName = $parameter->getName();
-					try {
-						return $this->query($resolveName);
-					} catch (QueryException $e2) {
-						// Pass null if typed and nullable
-						if ($parameter->allowsNull() && ($parameterType instanceof ReflectionNamedType)) {
-							return null;
-						}
-
-						// don't lose the error we got while trying to query by type
-						throw new QueryException($e->getMessage(), (int)$e->getCode(), $e);
-					}
-				}
-
-				throw $e;
-			}
-		}, $constructor->getParameters()))]]></code>
-    </LessSpecificReturnStatement>
     <MissingTemplateParam>
       <code><![CDATA[ArrayAccess]]></code>
     </MissingTemplateParam>
-    <MoreSpecificReturnType>
-      <code><![CDATA[\stdClass]]></code>
-    </MoreSpecificReturnType>
     <RedundantCast>
       <code><![CDATA[(int)$e->getCode()]]></code>
     </RedundantCast>
@@ -3885,14 +3816,6 @@
       <code><![CDATA[wrap]]></code>
     </UndefinedInterfaceMethod>
   </file>
-  <file src="lib/private/Files/Mount/ObjectHomeMountProvider.php">
-    <InvalidNullableReturnType>
-      <code><![CDATA[\OCP\Files\Mount\IMountPoint]]></code>
-    </InvalidNullableReturnType>
-    <NullableReturnStatement>
-      <code><![CDATA[null]]></code>
-    </NullableReturnStatement>
-  </file>
   <file src="lib/private/Files/Node/File.php">
     <InvalidReturnStatement>
       <code><![CDATA[$this->view->hash($type, $this->path, $raw)]]></code>
@@ -4102,12 +4025,6 @@
     </TypeDoesNotContainNull>
   </file>
   <file src="lib/private/Group/Group.php">
-    <InvalidArgument>
-      <code><![CDATA[bool]]></code>
-    </InvalidArgument>
-    <InvalidOperand>
-      <code><![CDATA[$hide]]></code>
-    </InvalidOperand>
     <LessSpecificReturnStatement>
       <code><![CDATA[$users]]></code>
     </LessSpecificReturnStatement>
@@ -4350,9 +4267,6 @@
     </ParamNameMismatch>
   </file>
   <file src="lib/private/Route/Router.php">
-    <InvalidClass>
-      <code><![CDATA[\OC_APP]]></code>
-    </InvalidClass>
     <InvalidNullableReturnType>
       <code><![CDATA[string]]></code>
     </InvalidNullableReturnType>
