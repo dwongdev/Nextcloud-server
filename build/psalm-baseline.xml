@@ -3343,11 +3343,6 @@
       <code><![CDATA[\OCP\IServerContainer]]></code>
     </InvalidReturnType>
   </file>
-  <file src="lib/private/AppFramework/Http/Dispatcher.php">
-    <NullArgument>
-      <code><![CDATA[null]]></code>
-    </NullArgument>
-  </file>
   <file src="lib/private/AppFramework/Http/Output.php">
     <InvalidReturnStatement>
       <code><![CDATA[@readfile($path)]]></code>
@@ -3451,17 +3446,6 @@
     <UndefinedInterfaceMethod>
       <code><![CDATA[$this->providers]]></code>
     </UndefinedInterfaceMethod>
-  </file>
-  <file src="lib/private/Cache/CappedMemoryCache.php">
-    <MissingTemplateParam>
-      <code><![CDATA[\ArrayAccess]]></code>
-    </MissingTemplateParam>
-  </file>
-  <file src="lib/private/Cache/File.php">
-    <LessSpecificImplementedReturnType>
-      <code><![CDATA[bool|mixed]]></code>
-      <code><![CDATA[bool|mixed]]></code>
-    </LessSpecificImplementedReturnType>
   </file>
   <file src="lib/private/Calendar/Manager.php">
     <LessSpecificReturnStatement>
